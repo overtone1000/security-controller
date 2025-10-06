@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-libudev-sys = "0.1"
+#libudev-sys = "0.1" #from ravedude
