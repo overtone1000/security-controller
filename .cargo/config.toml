@@ -2,5 +2,12 @@
 target = "avr-none"
 rustflags = ["-C", "target-cpu=atmega328p"]
 
+[target.'cfg(target_arch = "avr")']
+
+#Only enabled one. Ravedude uploads to board. Simavr emulates a board.
+#runner = "ravedude"
+#Simulate
+runner = "simavr -m atmega328p"
+
 [unstable]
 build-std = ["core"]

@@ -12,11 +12,17 @@ in
       llvmPackages.bintools
       rustup
 
+      #openssl is for cargo-generate
+      openssl
+
       #For avr programming
       pkgsCross.avr.buildPackages.gcc
       pkg-config
       avrdude
       udev
+
+      #For avr simulations
+      simavr
     ];
 
     RUSTC_VERSION = overrides.toolchain.channel;
@@ -28,10 +34,13 @@ in
       export PATH=$PATH:''${RUSTUP_HOME:-~/.rustup}/toolchains/$RUSTC_VERSION-x86_64-unknown-linux-gnu/bin/
       '';
     
-    # Add precompiled library to rustc search path
-    RUSTFLAGS = (builtins.map (a: ''-L ${a}/lib'') [
-      # add libraries here (e.g. pkgs.libvmi)
-    ]);
+    #Disabled this because it was interference with .cargo/config.toml, which needed to set rustflags.
+    #If both are needed, may need to add the desired target CPU flag in this nix config instead.
+
+    ## Add precompiled library to rustc search path
+    #RUSTFLAGS = (builtins.map (a: ''-L ${a}/lib'') [
+    #  # add libraries here (e.g. pkgs.libvmi)
+    #]);
 
     LD_LIBRARY_PATH = libPath;
     # Add glibc, clang, glib, and other headers to bindgen search path

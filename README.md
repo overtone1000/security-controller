@@ -1,5 +1,8 @@
 # security-controller
 Security controller using embedded rust
 
-# Dependencies
-Have to install ravedude from https://github.com/Rahix/avr-hal. `cargo install ravedude`
+# Development Environment
+- Depends on rustup (taken care of by default.nix)
+- Have to install ravedude from https://github.com/Rahix/avr-hal
+- Must use nightly toolchain? (rust-toolchain.toml)
+- .cargo/config.toml, .Cargo.toml, Ravedude.toml contents are very specific.

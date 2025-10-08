@@ -3,5 +3,31 @@ name = "security-controller"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "security-controller"
+test = false
+bench = false
+
 [dependencies]
-#libudev-sys = "0.1" #from ravedude
+panic-halt = "1.0.0"
+ufmt = "0.2.0"
+nb = "1.1.0"
+embedded-hal = "1.0"
+
+[dependencies.arduino-hal]
+git = "https://github.com/rahix/avr-hal"
+rev = "5ccdd12d724d5b65273eb33a27cb55ab2ddcc865"
+features = ["arduino-uno"]
+
+# Configure the build for minimal size - AVRs have very little program memory
+[profile.dev]
+panic = "abort"
+lto = true
+opt-level = "s"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+debug = true
+lto = true
+opt-level = "s"
