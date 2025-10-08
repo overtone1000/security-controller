@@ -3,13 +3,6 @@
 
 use panic_halt as _;
 
-use avr_device::interrupt;
-use core::cell::RefCell;
-
-type Console = arduino_hal::hal::usart::Usart0<arduino_hal::DefaultClock>;
-static CONSOLE: interrupt::Mutex<RefCell<Option<Console>>> =
-    interrupt::Mutex::new(RefCell::new(None));
-
 #[arduino_hal::entry]
 fn main() -> ! {
     let dp = arduino_hal::Peripherals::take().unwrap();

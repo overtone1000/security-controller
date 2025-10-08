@@ -3,6 +3,11 @@ name = "security-controller"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "security_controller"
+path = "src/lib.rs"
+test = false
+
 [[bin]]
 name = "security-controller"
 test = false
