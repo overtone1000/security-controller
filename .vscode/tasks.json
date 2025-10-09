@@ -9,6 +9,15 @@
             "problemMatcher": [
                 "$rustc"
             ],
+        },
+        {
+            "type": "shell",
+            "command": "cargo run",
+            "group": "build",
+            "label": "Cargo: Run",
+            "problemMatcher": [
+                "$rustc"
+            ],
         }
     ]
 }

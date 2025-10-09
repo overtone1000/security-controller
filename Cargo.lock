@@ -82,6 +82,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "790eea4361631c5e7d22598ecd5723ff611904e3344ce8720784c93e3d83d40b"
 
 [[package]]
+name = "either"
+version = "1.15.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "48c757948c5ede0e46177b7add2e67155f70e33c07fea8284df6576da70b3719"
+
+[[package]]
 name = "embedded-hal"
 version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -159,10 +165,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "security-controller"
+name = "security_controller"
 version = "0.1.0"
 dependencies = [
  "arduino-hal",
+ "avr-device",
+ "either",
  "embedded-hal 1.0.0",
  "nb 1.1.0",
  "panic-halt",

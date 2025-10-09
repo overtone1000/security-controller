@@ -3,10 +3,21 @@
 
 use panic_halt as _;
 
+use avr_device::interrupt;
+use security_controller::{println, Console, CONSOLE};
+
+fn put_console(console: Console) {
+    interrupt::free(|cs| {
+        *CONSOLE.borrow(cs).borrow_mut() = Some(console);
+    })
+}
+
 #[arduino_hal::entry]
 fn main() -> ! {
     let dp = arduino_hal::Peripherals::take().unwrap();
     let pins = arduino_hal::pins!(dp);
+    let serial = arduino_hal::default_serial!(dp, pins, 57600);
+    put_console(serial);
 
     /*
      * For examples (and inspiration), head to
@@ -20,8 +31,11 @@ fn main() -> ! {
 
     let mut led = pins.d13.into_output();
 
+    println!("Hi!");
+
     loop {
         led.toggle();
         arduino_hal::delay_ms(1000);
+        println!("Loop");
     }
 }
