@@ -9,6 +9,6 @@ Security controller using embedded rust
 
 # Flashing
 ```
-sudo avrdude -c usbtiny -p m328p -B 8MHz
+sudo avrdude -c usbtiny -p m328p -B 32 -v
 ```
 Frequency should be 8 MHz for atmega328p running with 8MHz oscillator at 3.3V, typically (at 5V) it's at 16 MHz.
