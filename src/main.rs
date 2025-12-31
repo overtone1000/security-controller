@@ -4,7 +4,7 @@
 use panic_halt as _;
 
 use avr_device::interrupt;
-use security_controller::{println, put_console, Console, CONSOLE};
+use security_controller::{println, util::console::put_console};
 
 #[arduino_hal::entry]
 fn main() -> ! {
