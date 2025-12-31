@@ -3,7 +3,6 @@
 
 use panic_halt as _;
 
-use avr_device::interrupt;
 use security_controller::{println, util::console::put_console};
 
 #[arduino_hal::entry]

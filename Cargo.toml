@@ -21,6 +21,7 @@ nb = "^1"
 embedded-hal = "^1"
 
 #Following example at https://github.com/cnmozzie/stm32-rust-demo/blob/main/Cargo.toml
+embedded-hal-bus = "^0" #Needed for spi to work with w5500 https://github.com/Rahix/avr-hal/issues/584
 w5500 = "^0" #To control w5500 device
 smoltcp-nal = { version = "^0", features=["shared-stack"] } # for dhcp 
 
