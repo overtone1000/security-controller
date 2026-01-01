@@ -1,13 +1,13 @@
 #![no_std]
 #![no_main]
 
-use core::cell::Cell;
+use core::cell::RefCell;
 
 use panic_halt as _;
 
-use security_controller::{network::{network_storage::NetStorage, w5500_interface}, println, util::console::put_console};
+use security_controller::{network::{network_storage::{CreateSingletonNetStorage, NetStorage, SingletonNetStorage}, w5500_interface}, println, util::console::put_console};
 
-static netstorage:Cell<NetStorage>=Cell::new(NetStorage::new());
+static mut NETSTORAGE:SingletonNetStorage=CreateSingletonNetStorage();
 
 #[arduino_hal::entry]
 fn main() -> ! {
@@ -40,8 +40,8 @@ fn main() -> ! {
     let cipo=pins.d12.into_pull_up_input();
     let sclk=pins.d13.into_output();
                 
-    let netstorageborrow=netstorage;
-    let w5500 = w5500_interface::W5500Interface::new(dp.SPI, cs, copi, cipo, sclk, netstorageborrow);
+    let netstoragesingleton=unsafe{&mut NETSTORAGE.take()};
+    let w5500 = w5500_interface::W5500Interface::new(dp.SPI, cs, copi, cipo, sclk, netstoragesingleton);
     
     
 
