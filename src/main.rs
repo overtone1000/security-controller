@@ -3,7 +3,7 @@
 
 use panic_halt as _;
 
-use security_controller::{println, util::console::put_console};
+use security_controller::{network::w5500_interface, println, util::console::put_console};
 
 #[arduino_hal::entry]
 fn main() -> ! {
@@ -11,14 +11,13 @@ fn main() -> ! {
     
     let pins = arduino_hal::pins!(dp);
 
-    let serial = arduino_hal::default_serial!(dp, pins, 57600);
-    
+    let serial = arduino_hal::default_serial!(dp, pins, 57600);   
     put_console(serial);
 
     //https://github.com/Rahix/avr-hal/tree/main/examples
 
     //Just for testing
-    let mut led = pins.d13.into_output();
+    //let mut led = pins.d13.into_output();
 
     let sensor1 = pins.d4.into_pull_up_input();
     let sensor2 = pins.d5.into_pull_up_input();
@@ -31,10 +30,19 @@ fn main() -> ! {
 
     let mut siren1=pins.d3.into_output();
 
-    println!("Hi!");
+    //Per atmega328p pinout
+    let cs=pins.d10.into_output();
+    let copi=pins.d11.into_output();
+    let cipo=pins.d12.into_pull_up_input();
+    let sclk=pins.d13.into_output();
+    
+    let mut netstorage = security_controller::network::network_storage::NetStorage::new();
+    let w5500 = w5500_interface::W5500Interface::new(dp.SPI, cs, copi, cipo, sclk, &mut netstorage);
+    
+    
 
     loop {
-        led.toggle();
+        //led.toggle();
         arduino_hal::delay_ms(1000);
         println!("Loop");
     }
