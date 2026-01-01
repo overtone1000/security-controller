@@ -142,7 +142,8 @@ impl W5500Interface {
         let dhcp_socket = dhcpv4::Socket::new();
 
         //let mut storage = NetStorage::new();
-
+        //let net_store = cortex_m::singleton!(: NetStorage = NetStorage::new()).unwrap();
+        
         let mut sockets = smoltcp::iface::SocketSet::new(storage.sockets.as_mut_slice() );
         
         let tcp_socket = {

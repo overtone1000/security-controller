@@ -6,6 +6,8 @@ const RX_STORAGE:usize = 1024; //Not sure how much is needed for mqtt client
 const TX_STORAGE:usize = 4096; //Not sure how much is needed for mqtt client
 
 /// Containers for smoltcp-related network configurations
+/// 
+
 pub struct NetStorage {
     // Note: There is an additional socket set item required for the DHCP socket.
     pub(crate) sockets: [smoltcp::iface::SocketStorage<'static>; NUM_TCP_SOCKETS + 1],
