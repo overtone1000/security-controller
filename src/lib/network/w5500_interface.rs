@@ -1,17 +1,32 @@
 use arduino_hal::hal::delay::Delay;
-use arduino_hal::hal::{delay, spi};
-use arduino_hal::spi::{DataOrder, SerialClockRate};
+use arduino_hal::hal::{delay};
+use arduino_hal::spi::{self, DataOrder, SerialClockRate};
 use arduino_hal::Peripherals;
+
 use embedded_hal_bus::spi::ExclusiveDevice;
+
 use w5500::MacAddress;
+use w5500::raw_device::RawDevice;
 
 use crate::println;
 
 //Trying to emulate https://github.com/cnmozzie/stm32-rust-demo/blob/main/examples/smoltcp-dhcp.rs
 //There's a local copy in the example directory in this repo
-pub fn test(dp:Peripherals, pins:arduino_hal::Pins)
-{
 
+type ReturnType = 
+    RawDevice<
+        w5500::bus::FourWire<
+            ExclusiveDevice<
+                spi::Spi,
+                spi::ChipSelectPin<arduino_hal::hal::port::PB2>,
+                Delay<arduino_hal::clock::MHz16>
+            >
+        >
+    >
+;
+
+pub fn initialize(dp:Peripherals, pins:arduino_hal::Pins) -> ReturnType
+{
     //Per atmega328p pinout
     let cs=pins.d10.into_output();
     let copi=pins.d11.into_output();
@@ -53,11 +68,11 @@ pub fn test(dp:Peripherals, pins:arduino_hal::Pins)
         2,0, 1,2,3,5
     );
     
-    let initialized=match uninitialized.initialize_macraw(mac)
+    let res = match uninitialized.initialize_macraw(mac)
     {
         Ok(res) => res,
         Err(_) => panic!("Couldn't initialize SPI device."),
     };
-    
-    //let mut mac = Mac::W5500(w5500);
+
+    res
 }

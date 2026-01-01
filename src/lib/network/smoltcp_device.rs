@@ -1,30 +1,24 @@
 use smoltcp_nal::smoltcp;
+use w5500::bus::Bus;
+use w5500::raw_device::RawDevice;
 
-pub enum NetworkDevice
+const TRANSMISSION:usize=1500;
+
+pub enum NetworkDevice<T:Bus>
 {
-    W5500(w5500::raw_device::RawDevice
-        <
-            w5500::bus::FourWire
-                <
-                    embedded_hal_bus::spi::ExclusiveDevice
-                    <
-                        arduino_hal::hal::Spi,
-                        arduino_hal::port::Pin<arduino_hal::port::mode::Output, arduino_hal::hal::port::PB2>,
-                        arduino_hal::hal::delay::Delay<arduino_hal::clock::MHz16>
-                    >
-                >
-        >
-    ),
+    W5500(RawDevice<T>),
 }
 
-impl smoltcp::phy::Device for NetworkDevice {
+impl <T:Bus> smoltcp::phy::Device for NetworkDevice<T> {
     type RxToken<'a> = RxToken where Self: 'a;
-    type TxToken<'a> = TxToken<'a> where Self: 'a;
+    type TxToken<'a> = TxToken<'a, T> where Self: 'a;
 
     fn capabilities(&self) -> smoltcp::phy::DeviceCapabilities {
         let mut caps = smoltcp::phy::DeviceCapabilities::default();
-        caps.max_transmission_unit = 1500;
+        crate::println!("This max transmission unit may be incorrect.");
+        caps.max_transmission_unit = TRANSMISSION;
         caps.medium = smoltcp::phy::Medium::Ethernet;
+
         caps
     }
 
@@ -32,7 +26,7 @@ impl smoltcp::phy::Device for NetworkDevice {
         &mut self,
         _timestamp: smoltcp::time::Instant,
     ) -> Option<(Self::RxToken<'_>, Self::TxToken<'_>)> {
-        let mut buffer = [0u8; 1500];
+        let mut buffer = [0u8; TRANSMISSION];
         let len = match self {
             NetworkDevice::W5500(w5500) => w5500.read_frame(&mut buffer[..]).unwrap(),
         };
@@ -56,7 +50,7 @@ impl smoltcp::phy::Device for NetworkDevice {
 }
 
 pub struct RxToken {
-    frame_buffer: [u8; 1500],
+    frame_buffer: [u8; TRANSMISSION],
     length: usize,
 }
 
@@ -69,16 +63,16 @@ impl smoltcp::phy::RxToken for RxToken {
     }
 }
 
-pub struct TxToken<'a> {
-    mac: &'a mut NetworkDevice,
+pub struct TxToken<'a, T:Bus> {
+    mac: &'a mut NetworkDevice<T>,
 }
 
-impl<'a> smoltcp::phy::TxToken for TxToken<'a> {
+impl<'a,T:Bus> smoltcp::phy::TxToken for TxToken<'a, T> {
     fn consume<R, F>(self, len: usize, f: F) -> R
     where
         F: FnOnce(&mut [u8]) -> R,
     {
-        let mut buffer = [0u8; 1500];
+        let mut buffer = [0u8; TRANSMISSION];
         let result = f(&mut buffer[..len]);
         match self.mac {
             NetworkDevice::W5500(mac) => {
