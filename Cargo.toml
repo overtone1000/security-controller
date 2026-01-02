@@ -20,14 +20,11 @@ ufmt = "^0"
 nb = "^1"
 embedded-hal = "^1"
 
-#Following example at https://github.com/cnmozzie/stm32-rust-demo/blob/main/Cargo.toml
-embedded-hal-bus = "^0" #Needed for spi to work with w5500 https://github.com/Rahix/avr-hal/issues/584
-w5500 = "^0" #To control w5500 device
-smoltcp-nal = { version = "^0", features=["shared-stack"] } #good wrapper for smoltcp
+w5500-mqtt = "^0"
 
 [dependencies.arduino-hal]
 git = "https://github.com/rahix/avr-hal"
-rev = "5ccdd12d724d5b65273eb33a27cb55ab2ddcc865"
+rev = "6de651a2303ad1f392fc628675af2372632df4fb"
 features = ["arduino-uno"]
 
 [dependencies.avr-device]

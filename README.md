@@ -4,7 +4,7 @@ Security controller using embedded rust
 # Development Environment
 - Depends on rustup (taken care of by default.nix)
 - Have to install ravedude from https://github.com/Rahix/avr-hal
-- Must use nightly toolchain? (rust-toolchain.toml)
+- Must use nightly toolchain? (rust-toolchain.toml) Yes, and need to use the version from the commit to avr-hal repo in its rust-toolchain.toml.
 - .cargo/config.toml, .Cargo.toml, Ravedude.toml contents are very specific.
 
 # Flashing
@@ -32,3 +32,6 @@ This seems like a real pain.
 Switch to something with more flash memory like W5500-EVB-Pico (better hardware: RP2040)?
 https://thepihut.com/products/wiznet-w5100s-evb-pico-rp2040-board-with-ethernet
 Would need to check the power for everything.
+
+Try this crate?
+https://crates.io/crates/w5500-hl

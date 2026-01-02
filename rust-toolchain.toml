@@ -1,4 +1,4 @@
 [toolchain]
-channel = "nightly-2026-01-01" #Can just update to current day
+channel = "nightly-2025-04-27" #can change this to anythi
 components = ["rust-src"]
 profile = "minimal"

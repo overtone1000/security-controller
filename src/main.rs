@@ -2,8 +2,7 @@
 #![no_main]
 
 use panic_halt as _;
-
-use security_controller::{network::{network_storage::NetStorage, w5500_interface}, println, util::console::put_console};
+use security_controller::{println, util::console::put_console};
 
 #[arduino_hal::entry]
 fn main() -> ! {
@@ -35,13 +34,9 @@ fn main() -> ! {
     let copi=pins.d11.into_output();
     let cipo=pins.d12.into_pull_up_input();
     let sclk=pins.d13.into_output();
-                
-    let mut netstorage=NetStorage::new();
-    let mut w5500 = w5500_interface::W5500Interface::new(dp.SPI, cs, copi, cipo, sclk, &mut netstorage);
     
     loop {
-        //arduino_hal::delay_ms(1000);
+        arduino_hal::delay_ms(1000);
         println!("Loop");
-        w5500.process_sockets();
     }
 }
