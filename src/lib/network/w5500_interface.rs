@@ -10,7 +10,7 @@ use embedded_hal_bus::spi::ExclusiveDevice;
 use smoltcp_nal::smoltcp;
 use smoltcp_nal::smoltcp::iface::SocketHandle;
 use smoltcp_nal::smoltcp::socket::dhcpv4;
-use smoltcp_nal::smoltcp::wire::{HardwareAddress, IpCidr};
+use smoltcp_nal::smoltcp::wire::{HardwareAddress, IpCidr, Ipv4Cidr};
 use smoltcp::wire::Ipv4Address;
 
 use w5500::MacAddress;
@@ -57,26 +57,28 @@ impl CounterClock
     }
 }
 
-pub struct W5500Interface
+pub struct W5500Interface<'a>
 {
     network_device:NetworkDevice<BusDeviceType>,
     network_interface:smoltcp::iface::Interface,
     //storage:&'static NetStorage,
-    sockets:smoltcp::iface::SocketSet<'static>,
+    //storage:NetStorage<'a>,
+    sockets:smoltcp::iface::SocketSet<'a>,
     tcp_handle:SocketHandle,
     dhcp_handle:SocketHandle,
     clock:CounterClock   
 }
 
-impl W5500Interface {
+impl <'a> W5500Interface<'a> {
+
     pub fn new(
         spi_peripheral:arduino_hal::pac::SPI,
         cs: Pin<Output, PB2>,
         copi: Pin<Output, PB3>,
         cipo: Pin<Input<PullUp>, PB4>,
         sclk: Pin<Output, PB5>,
-        storage:&'static mut NetStorage
-    )->W5500Interface
+        storage:&'a mut NetStorage<'a>
+    )->W5500Interface<'a>
     {
         println!("This data order and serial clock rate may be incorrect.");
         let settings = spi::Settings{
@@ -116,7 +118,7 @@ impl W5500Interface {
         let initialized = match uninitialized.initialize_macraw(mac)
         {
             Ok(res) => res,
-            Err(_) => panic!("Couldn't initialize SPI device."),
+            Err(_) => panic!(),
         };
 
         let mut network_device = NetworkDevice::W5500(initialized);
@@ -171,13 +173,55 @@ impl W5500Interface {
         retval
     }
 
-
     pub fn process_sockets(&mut self)
     {
+        
+        let timestamp = self.clock.get_new_loop_timestamp();
+
+        
+
         self.network_interface.poll(
-            self.clock.get_new_loop_timestamp(),
+            timestamp,
             &mut self.network_device,
             &mut self.sockets
         );
+
+/*        
+
+        let event= self.sockets.get_mut::<dhcpv4::Socket>(self.dhcp_handle).poll();
+
+        match event
+        {
+            None => {}
+            Some(dhcpv4::Event::Configured(config)) => {
+                
+                println!("DHCP config acquired!");
+                //println!("IP address is {}", config.address); //doesn't implement display
+                set_ipv4_addr(&mut self.network_interface, config.address);
+
+                if let Some(router) = config.router {
+                    //println!("Default gateway: {}", router); //doesn't implement display
+                    self.network_interface.routes_mut().add_default_ipv4_route(router).unwrap();
+                } else {
+                    println!("Default gateway: None");
+                    self.network_interface.routes_mut().remove_default_ipv4_route();
+                }
+            }
+            Some(dhcpv4::Event::Deconfigured) => {
+                println!("DHCP lost config!");
+                set_ipv4_addr(&mut self.network_interface,Ipv4Cidr::new(Ipv4Address::UNSPECIFIED, 0));
+                self.network_interface.routes_mut().remove_default_ipv4_route();
+            }
+        }
+        */
     }
+}
+
+fn set_ipv4_addr(network_interface:&mut smoltcp::iface::Interface, cidr: Ipv4Cidr) {
+    network_interface.update_ip_addrs(
+        |addrs| {
+            let dest = addrs.iter_mut().next().unwrap();
+            *dest = IpCidr::Ipv4(cidr);
+        }
+    );
 }

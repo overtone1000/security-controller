@@ -1,6 +1,8 @@
 [build]
 target = "avr-none"
-rustflags = ["-C", "target-cpu=atmega328p"]
+#rustflags = ["-C", "target-cpu=atmega328p"] #for testing binary size too large, need to delete target directory for this to work
+rustflags = ["-C", "target-cpu=atmega2560"] #for testing binary size too large
+#rustflags = ["-C", "link-arg=profiling/expand_text.x", "-C", "target-cpu=atmega328p", "--verbose"] #for testing binary size too large
 
 [target.'cfg(target_arch = "avr")']
 
