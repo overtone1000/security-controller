@@ -254,6 +254,9 @@ name = "w5500-ll"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ef4332c876837525e11b6949300fb7471ec8a2718a7df4fc66084f64feb28ca6"
+dependencies = [
+ "embedded-hal 1.0.0",
+]
 
 [[package]]
 name = "w5500-mqtt"

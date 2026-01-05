@@ -20,7 +20,7 @@ ufmt = "^0"
 nb = "^1"
 embedded-hal = "^1"
 
-w5500-mqtt = "^0"
+w5500-mqtt = {version="^0", features=["eh1"]}
 
 [dependencies.arduino-hal]
 git = "https://github.com/rahix/avr-hal"

@@ -2,7 +2,7 @@
 #![no_main]
 
 use panic_halt as _;
-use security_controller::{println, util::console::put_console};
+use security_controller::{network::w5500::InstantiatedW5500, println, util::console::put_console};
 
 #[arduino_hal::entry]
 fn main() -> ! {
@@ -34,9 +34,40 @@ fn main() -> ! {
     let copi=pins.d11.into_output();
     let cipo=pins.d12.into_pull_up_input();
     let sclk=pins.d13.into_output();
+
+    let settings=arduino_hal::spi::Settings{ 
+        data_order:arduino_hal::spi::DataOrder::LeastSignificantFirst,
+        clock:arduino_hal::spi::SerialClockRate::OscfOver32,
+        mode:embedded_hal::spi::MODE_0
+    };
     
-    loop {
-        arduino_hal::delay_ms(1000);
-        println!("Loop");
+    let (spi,_) = arduino_hal::spi::Spi::new(
+        dp.SPI,
+        sclk,
+        copi,
+        cipo,
+        cs,
+        settings
+    );
+
+    match InstantiatedW5500::new(spi)
+    {
+        Ok(mut iw5500)=>{
+            loop {
+                println!("Loop");
+                match iw5500.process()
+                {
+                    Ok(_)=>{},
+                    Err(e)=>{
+                        println!("{}",e);
+                        panic!("mqtt loop error");
+                    }
+                }
+            }
+        },
+        Err(e)=>{
+            println!("{}",e);
+            panic!("Couldn't instantiate w5500.");
+        }
     }
 }
