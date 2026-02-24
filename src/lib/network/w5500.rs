@@ -10,7 +10,7 @@ use w5500_mqtt::{
 use crate::{network::w5500, println};
 use embedded_hal::spi;
 
-const HOST: SocketAddrV4 = SocketAddrV4::new(Ipv4Addr::new(10, 0, 0, 4), 8883);
+const HOST: SocketAddrV4 = SocketAddrV4::new(Ipv4Addr::new(10, 10, 10, 199), 8883);
 
 struct CounterClock
 {
@@ -58,16 +58,16 @@ impl <'a> InstantiatedW5500<'a>
                     from_utf8(&topic_buf[..topic_len.into()]),
                     from_utf8(&payload_buf[..payload_len.into()]),
                 ) {
-                    (Ok(topic), Ok(payload)) => println!("{} {}",topic,payload),
-                    _ => println!("payload and topic are not valid UTF-8"),
+                    (Ok(topic), Ok(payload)) => {} //println!("{} {}",topic,payload),
+                    _ => {} //println!("payload and topic are not valid UTF-8"),
                 }
 
                 reader.done().unwrap();
             }
             // This does not handle failures
-            Ok(Event::SubAck(_ack)) => println!("Suback"),
+            Ok(Event::SubAck(_ack)) => {} //println!("Suback"),
             // should never occur - we never unsubscribe
-            Ok(Event::UnSubAck(_ack)) => println!("Unsuback"),
+            Ok(Event::UnSubAck(_ack)) => {} //println!("Unsuback"),
             Ok(Event::ConnAck) => {
                 self.client
                     .subscribe(&mut self.w5500, "#")

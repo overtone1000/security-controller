@@ -11,7 +11,7 @@ automatic = true
 programmer = "usbtiny"
 partno = "m328p"
 baudrate = 32
-do-chip-erase = true
+do-chip-erase=false
 
 [general]
 # After flashing, open the serial console at 57600 baud.

@@ -8,10 +8,25 @@ Security controller using embedded rust
 - .cargo/config.toml, .Cargo.toml, Ravedude.toml contents are very specific.
 
 # Flashing
-```
-sudo avrdude -c usbtiny -p m328p -B 32 -v
-```
+
 Frequency should be 8 MHz for atmega328p running with 8MHz oscillator at 3.3V, typically (at 5V) it's at 16 MHz.
+
+Check device (arduino)
+```
+avrdude -c arduino -v
+```
+
+Check device (usbtiny)
+```
+avrdude -c usbtiny -p m328p -B 32 -v
+```
+
+Start serial
+```
+picocom /dev/ttyACM0 -b 57600
+```
+
+Upload by ravedude works with cargo, configured by `.cargo/config.toml` and `Ravedude.toml`. `cargo run` at terminal or in VSCode will flash the device.
 
 # Binary Size Investigation
 

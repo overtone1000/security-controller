@@ -2,7 +2,8 @@
 #![no_main]
 
 use panic_halt as _;
-use security_controller::{network::w5500::InstantiatedW5500, println, util::console::put_console};
+use security_controller::{network::w5500::InstantiatedW5500};
+//use security_controller::{network::w5500::InstantiatedW5500, println, util::console::put_console};
 
 #[arduino_hal::entry]
 fn main() -> ! {
@@ -10,8 +11,10 @@ fn main() -> ! {
     
     let pins = arduino_hal::pins!(dp);
 
-    let serial = arduino_hal::default_serial!(dp, pins, 57600);   
-    put_console(serial);
+    //Board has no serial pinout AND used d0 for ethernet so don't try to use serial
+    //let serial = arduino_hal::default_serial!(dp, pins, 57600);   
+    //put_console(serial);
+    //println!("Console initiated.");
 
     //https://github.com/Rahix/avr-hal/tree/main/examples
 
@@ -50,23 +53,25 @@ fn main() -> ! {
         settings
     );
 
+    //println!("Instantiating W5500.");
     match InstantiatedW5500::new(spi)
     {
         Ok(mut iw5500)=>{
             loop {
-                println!("Loop");
+                //println!("Loop");
                 match iw5500.process()
                 {
                     Ok(_)=>{},
                     Err(e)=>{
-                        println!("{}",e);
+                        //println!("{}",e);
                         panic!("mqtt loop error");
                     }
                 }
             }
         },
         Err(e)=>{
-            println!("{}",e);
+            //println!("Couldn't instantiate W5500.");
+            //println!("{}",e);
             panic!("Couldn't instantiate w5500.");
         }
     }
