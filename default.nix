@@ -24,6 +24,9 @@ in
 
       #For avr simulations
       simavr
+
+      #For serial communication
+      picocom
     ];
 
     RUSTC_VERSION = overrides.toolchain.channel;

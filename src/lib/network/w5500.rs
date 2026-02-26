@@ -10,6 +10,7 @@ use w5500_mqtt::{
 use crate::{network::w5500, println};
 use embedded_hal::spi;
 
+//This is supposed to be the mqtt server it connects to, not the IP for the device!
 const HOST: SocketAddrV4 = SocketAddrV4::new(Ipv4Addr::new(10, 10, 10, 199), 8883);
 
 struct CounterClock
@@ -88,11 +89,11 @@ impl <'a> InstantiatedW5500<'a>
             HOST
         );
 
-        let id_str = "security-controller";
+        let id_str = "SecurityController"; //letters and numbers ony
         let id = match w5500_mqtt::ClientId::new(id_str)
         {
             None=>{
-                return Err(id_str);
+                return Err("Couldn't create w5500_mqtt client id.");
             },
             Some(id)=>id
         };

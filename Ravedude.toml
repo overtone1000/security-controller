@@ -1,22 +1,10 @@
-#"uno", "mega2560" pre-exist, but using USB tiny probably needs its own setup
-#board = "uno"
-
-[board]
-name = "atmega328p via usbtiny"
-
-[board.reset]
-automatic = true
-
-[board.avrdude]
-programmer = "usbtiny"
-partno = "m328p"
-baudrate = 32
-do-chip-erase = true
-
 [general]
+board = "uno"
+#serial-port = "/de/tty21"
+
 # After flashing, open the serial console at 57600 baud.
-open-console = false
-#serial-baudrate = 57600
+open-console = true
+serial-baudrate = 57600
 
 # For documentation about this file, check here:
 # https://github.com/Rahix/avr-hal/blob/main/ravedude/README.md#ravedudetoml-format
